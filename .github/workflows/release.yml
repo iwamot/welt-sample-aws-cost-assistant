@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v1.2.3)'
+        required: true
+        type: string
+
+permissions: {}
+
+jobs:
+  release:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.job }}-${{ github.ref }}
+      cancel-in-progress: false
+    uses: iwamot/workflows/.github/workflows/release-only.yml@6c93f31e16a47245f6103186d393e382f1d28666 # v8.20.2
+    with:
+      tag: ${{ inputs.tag || '' }}
+    permissions:
+      checks: read  # allow the shared release workflow to inspect required CI
+      statuses: read  # allow inspection of required legacy commit statuses
+      contents: write  # to create the GitHub Release

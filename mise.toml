@@ -1,0 +1,16 @@
+min_version = "2026.10.25"
+
+[settings]
+experimental = true
+lockfile = true
+minimum_release_age = "1d"
+
+[tool_config]
+locked = true
+
+[tools]
+
+[task_config]
+includes = [
+  "git::https://github.com/iwamot/mise-tasks.git//.mise/tasks?ref=v3.5.1",
+]

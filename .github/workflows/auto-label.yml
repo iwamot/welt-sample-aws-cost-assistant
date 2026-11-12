@@ -1,0 +1,16 @@
+name: 'Auto label by title'
+on:
+  pull_request:
+    types: [opened, edited]
+    branches: [ "main" ]
+
+permissions: {}
+
+jobs:
+  label:
+    permissions:
+      pull-requests: write  # to add a label to the PR
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.job }}-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    uses: iwamot/workflows/.github/workflows/auto-label.yml@6c93f31e16a47245f6103186d393e382f1d28666 # v8.20.2

@@ -1,0 +1,24 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [ "main" ]
+  # Daily, so a new advisory against the locked dependencies fails the audit
+  # even when nothing else changes.
+  schedule:
+    - cron: '0 6 * * *'
+      timezone: Asia/Tokyo
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  validate:
+    permissions:
+      contents: read
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.job }}-${{ github.event.pull_request.number || github.sha }}
+      cancel-in-progress: true
+    uses: iwamot/workflows/.github/workflows/validate.yml@6c93f31e16a47245f6103186d393e382f1d28666 # v8.20.2

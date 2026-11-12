@@ -1,0 +1,15 @@
+name: DCO
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions: {}
+
+jobs:
+  dco:
+    permissions:
+      pull-requests: read  # to read PR commits for DCO sign-off check
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.job }}-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    uses: iwamot/workflows/.github/workflows/dco.yml@6c93f31e16a47245f6103186d393e382f1d28666 # v8.20.2
