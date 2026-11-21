@@ -1,4 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>iwamot/renovate-config#v0.23.0"]
+  "extends": ["github>iwamot/renovate-config#v0.23.0"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Track the Welt release that the Lambda function downloads",
+      "managerFilePatterns": ["/(^|/)deploy/download-welt\\.mjs$/"],
+      "matchStrings": [
+        "// renovate: datasource=(?<datasource>[a-z-]+) depName=(?<depName>\\S+)\\s+const version = '(?<currentValue>[^']+)';"
+      ]
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Keep the tests on the Python that AgentCore Runtime runs. Raise this bound together with runtimeVersion in agentcore/agentcore.json and the Welt asset in deploy/download-welt.mjs once the Runtime supports the next Python.",
+      "matchManagers": ["mise"],
+      "matchDepNames": ["python"],
+      "allowedVersions": "<3.15"
+    }
+  ]
 }
