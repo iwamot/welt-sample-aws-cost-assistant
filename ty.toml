@@ -1,0 +1,5 @@
+[environment]
+python = "app/agent/.venv"
+
+[src]
+include = ["app", "tests"]

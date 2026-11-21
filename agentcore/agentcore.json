@@ -1,0 +1,45 @@
+{
+  "name": "WeltCostAssistant",
+  "version": 2,
+  "managedBy": "CDK",
+  "runtimes": [
+    {
+      "name": "welt_cost_assistant",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/agent",
+      "runtimeVersion": "PYTHON_3_14",
+      "instrumentation": {
+        "enableOtel": false
+      }
+    }
+  ],
+  "agentCoreGateways": [
+    {
+      "name": "tools",
+      "authorizerType": "AWS_IAM",
+      "enableSemanticSearch": false,
+      "policyEngineConfiguration": {
+        "policyEngineName": "tools_access",
+        "mode": "ENFORCE"
+      },
+      "targets": [
+        {
+          "name": "awsmcp",
+          "targetType": "mcpServer",
+          "endpoint": "https://aws-mcp.us-east-1.api.aws/mcp",
+          "outboundAuth": {
+            "type": "GATEWAY_IAM_ROLE",
+            "service": "aws-mcp",
+            "region": "us-east-1"
+          }
+        }
+      ]
+    }
+  ],
+  "policyEngines": [
+    {
+      "name": "tools_access"
+    }
+  ]
+}
