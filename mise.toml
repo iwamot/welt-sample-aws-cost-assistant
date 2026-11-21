@@ -10,7 +10,7 @@ locked = true
 
 [tools]
 python = "3.14.10"
-node = "24.22.3"
+node = "26.13.1"
 biome = "2.6.8"
 "aqua:astral-sh/ruff" = "0.17.6"
 "aqua:astral-sh/ty" = "0.0.107"
