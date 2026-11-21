@@ -9,6 +9,12 @@ minimum_release_age = "1d"
 locked = true
 
 [tools]
+python = "3.14.10"
+node = "24.22.3"
+biome = "2.6.8"
+"aqua:astral-sh/ruff" = "0.17.5"
+"aqua:astral-sh/ty" = "0.0.107"
+"aqua:astral-sh/uv" = "0.13.8"
 
 [task_config]
 includes = [

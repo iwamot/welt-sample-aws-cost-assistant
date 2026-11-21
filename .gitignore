@@ -1,0 +1,8 @@
+.venv/
+.venv-compat/
+__pycache__/
+.ruff_cache/
+agentcore/.cache/
+agentcore/cdk/cdk.out/
+agentcore/cdk/dist/
+node_modules/

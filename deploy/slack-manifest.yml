@@ -1,0 +1,21 @@
+display_information:
+  name: AWS Cost Assistant
+features:
+  app_home:
+    home_tab_enabled: false
+    messages_tab_enabled: false
+  bot_user:
+    display_name: AWS Cost Assistant
+    always_online: true
+oauth_config:
+  scopes:
+    bot:
+      - channels:history
+      - chat:write
+      - files:read
+      - files:write
+      - groups:history
+      - reactions:write
+      - users:read
+settings:
+  socket_mode_enabled: false
