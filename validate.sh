@@ -25,15 +25,18 @@ ty check --error-on-warning
 # TypeScript and JavaScript: the CDK app and the Welt download script
 biome check --write
 
-# CDK: synth needs an account ID but no credentials, so a placeholder keeps the
-# template free of any real account. The deployment settings stay unset, so the
-# tests always read the default stack's template.
+# CDK: synth needs an account ID but no credentials. Hiding the local credentials
+# makes the CLI use the placeholder, so the template is the same everywhere and
+# holds no real account. The deployment settings stay unset, so the tests always
+# read the default stack's template.
 (
   cd agentcore/cdk
   npm ci --no-fund
   npm audit
   rm -rf cdk.out
   env -u TARGET_NAME -u STACK_REGION -u MODEL_ID -u MODEL_REGION \
+    -u AWS_PROFILE -u AWS_ACCESS_KEY_ID -u AWS_SECRET_ACCESS_KEY -u AWS_SESSION_TOKEN \
+    AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null \
     CDK_DEFAULT_ACCOUNT=123456789012 npm run cdk -- synth --quiet
 )
 

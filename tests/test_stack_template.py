@@ -3,12 +3,17 @@ import re
 import unittest
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
 # validate.sh runs `cdk synth` before the tests, so the template matches the current
 # CDK code and agentcore.json.
 TEMPLATE = (
-    Path(__file__).resolve().parents[1]
-    / "agentcore/cdk/cdk.out/AgentCore-WeltCostAssistant-default.template.json"
+    ROOT / "agentcore/cdk/cdk.out/AgentCore-WeltCostAssistant-default.template.json"
 )
+# Nothing else ties these pins to the Runtime and Lambda settings in the template:
+# deployment succeeds either way, and a mismatch only shows when the code runs.
+WELT_DOWNLOAD = (ROOT / "deploy/download-welt.mjs").read_text()
+MISE = (ROOT / "mise.toml").read_text()
+RENOVATE = json.loads((ROOT / ".github/renovate.json").read_text())
 READ_VERBS = ("Describe", "Get", "List", "View")
 # The services in the Gateway role's read actions that hold cost data. The role's other
 # reads (EC2, Lambda, CloudWatch Logs, and so on) feed Compute Optimizer's analysis.
@@ -111,6 +116,25 @@ class StackTemplateTest(unittest.TestCase):
             for action in actions if isinstance(actions, list) else [actions]:
                 with self.subTest(action=action):
                     self.assertNotIn(action.split(":")[0], COST_SERVICES)
+
+    def test_welt_asset_matches_the_lambda_runtime_and_architecture(self):
+        ((python, architecture),) = re.findall(
+            r"const filename = 'welt-lambda-python(\d+\.\d+)-(\w+)\.zip';",
+            WELT_DOWNLOAD,
+        )
+        (function,) = self.of_type("AWS::Lambda::Function")
+        self.assertEqual(function["Properties"]["Runtime"], f"python{python}")
+        self.assertEqual(function["Properties"]["Architectures"], [architecture])
+
+    def test_checks_run_on_the_python_that_agentcore_runtime_runs(self):
+        (runtime,) = self.of_type("AWS::BedrockAgentCore::Runtime")
+        artifact = runtime["Properties"]["AgentRuntimeArtifact"]["CodeConfiguration"]
+        ((major, minor),) = re.findall(r'^python = "(\d+)\.(\d+)\.', MISE, re.MULTILINE)
+        self.assertEqual(artifact["Runtime"], f"PYTHON_{major}_{minor}")
+        (rule,) = [
+            r for r in RENOVATE["packageRules"] if r.get("matchDepNames") == ["python"]
+        ]
+        self.assertEqual(rule["allowedVersions"], f"<{major}.{int(minor) + 1}")
 
 
 class HelperTest(unittest.TestCase):
