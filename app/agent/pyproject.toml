@@ -4,7 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "bedrock-agentcore==1.26.1",
-    "mcp-proxy-for-aws==1.8.0",
+    "mcp-proxy-for-aws==2.0.0",
     "strands-agents==1.65.0",
     "welt-io-strands==0.10.4",
 ]
