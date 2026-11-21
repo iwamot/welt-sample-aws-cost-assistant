@@ -18,5 +18,5 @@ biome = "2.6.8"
 
 [task_config]
 includes = [
-  "git::https://github.com/iwamot/mise-tasks.git//.mise/tasks?ref=v3.5.1",
+  "git::https://github.com/iwamot/mise-tasks.git//.mise/tasks?ref=v3.5.2",
 ]
