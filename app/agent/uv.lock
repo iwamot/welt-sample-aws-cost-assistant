@@ -1747,7 +1747,6 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "bedrock-agentcore" },
-    { name = "mcp" },
     { name = "mcp-proxy-for-aws" },
     { name = "strands-agents" },
     { name = "welt-io-strands" },
@@ -1761,7 +1760,6 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "bedrock-agentcore", specifier = "==1.26.1" },
-    { name = "mcp", specifier = "==1.30.0" },
     { name = "mcp-proxy-for-aws", specifier = "==1.8.0" },
     { name = "strands-agents", specifier = "==1.65.0" },
     { name = "welt-io-strands", specifier = "==0.10.4" },

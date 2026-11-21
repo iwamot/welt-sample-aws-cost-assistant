@@ -54,7 +54,7 @@ CDK asks you to confirm the IAM changes, and prints `SlackSecretName` and `Funct
 5. Back in the first window, expand **Your app credentials** and copy the **Bot token**.
 6. Choose **Go to App Settings**, and copy the **Signing Secret** from **Basic Information**.
 
-[create-slack-app]: https://api.slack.com/apps?new_app=1&manifest_yaml=display_information%3A%0A%20%20name%3A%20AWS%20Cost%20Assistant%0Afeatures%3A%0A%20%20app_home%3A%0A%20%20%20%20home_tab_enabled%3A%20false%0A%20%20%20%20messages_tab_enabled%3A%20false%0A%20%20bot_user%3A%0A%20%20%20%20display_name%3A%20AWS%20Cost%20Assistant%0A%20%20%20%20always_online%3A%20true%0Aoauth_config%3A%0A%20%20scopes%3A%0A%20%20%20%20bot%3A%0A%20%20%20%20%20%20-%20channels%3Ahistory%0A%20%20%20%20%20%20-%20chat%3Awrite%0A%20%20%20%20%20%20-%20files%3Aread%0A%20%20%20%20%20%20-%20files%3Awrite%0A%20%20%20%20%20%20-%20groups%3Ahistory%0A%20%20%20%20%20%20-%20reactions%3Awrite%0A%20%20%20%20%20%20-%20users%3Aread%0Asettings%3A%0A%20%20socket_mode_enabled%3A%20false%0A
+[create-slack-app]: https://api.slack.com/apps?new_app=1&manifest_yaml=display_information%3A%0A%20%20name%3A%20AWS%20Cost%20Assistant%0Afeatures%3A%0A%20%20app_home%3A%0A%20%20%20%20home_tab_enabled%3A%20false%0A%20%20%20%20messages_tab_enabled%3A%20false%0A%20%20bot_user%3A%0A%20%20%20%20display_name%3A%20AWS%20Cost%20Assistant%0A%20%20%20%20always_online%3A%20true%0Aoauth_config%3A%0A%20%20scopes%3A%0A%20%20%20%20bot%3A%0A%20%20%20%20%20%20-%20channels%3Ahistory%0A%20%20%20%20%20%20-%20chat%3Awrite%0A%20%20%20%20%20%20-%20files%3Aread%0A%20%20%20%20%20%20-%20groups%3Ahistory%0A%20%20%20%20%20%20-%20reactions%3Awrite%0A%20%20%20%20%20%20-%20users%3Aread%0Asettings%3A%0A%20%20socket_mode_enabled%3A%20false%0A
 
 ### Store the Slack credentials
 
@@ -107,7 +107,7 @@ To ask a follow-up question, reply in the same thread; you don't need to mention
 ./validate.sh
 ```
 
-The script uses [mise](https://mise.jdx.dev/) to install the pinned tools, including the Python version that AgentCore Runtime runs. It audits the dependencies and checks their licenses, lints and type-checks the code, synthesizes the stack with a placeholder account ID, which needs no AWS credentials, and runs the tests. The tests cover how the agent builds its system prompt, and check the synthesized template for the Cedar policy's tools, the policy engine's ENFORCE mode, and the IAM permissions of the Gateway and the agent.
+The script uses [mise](https://mise.jdx.dev/) to install the pinned tools, including the Python version that AgentCore Runtime runs. It audits the dependencies and checks their licenses, lints and type-checks the code, synthesizes the stack with a placeholder account ID, which needs no AWS credentials, and runs the tests. The tests cover how the agent builds its system prompt, and check the synthesized template for the Cedar policy's tools, the policy engine's ENFORCE mode, and the IAM permissions of the Gateway and the agent. They also check that the link to Slack's app-creation screen carries the manifest in `deploy/slack-manifest.yml`.
 
 To run the agent's test on Python 3.12 or 3.13, which AgentCore Runtime and the dependencies also support, set the version for `uv`:
 
