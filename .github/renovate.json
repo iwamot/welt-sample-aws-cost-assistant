@@ -13,7 +13,7 @@
   ],
   "packageRules": [
     {
-      "description": "Keep the tests on the Python that AgentCore Runtime runs. Raise this bound together with runtimeVersion in agentcore/agentcore.json and the Welt asset in deploy/download-welt.mjs once the Runtime supports the next Python.",
+      "description": "Keep the tests on the Python that AgentCore Runtime runs. Raise this bound together with runtimeVersion in agentcore/agentcore.json once the Runtime supports the next Python.",
       "matchManagers": ["mise"],
       "matchDepNames": ["python"],
       "allowedVersions": "<3.15"

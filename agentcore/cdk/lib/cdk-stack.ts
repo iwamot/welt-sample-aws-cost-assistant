@@ -1,10 +1,10 @@
 import { execFileSync } from 'node:child_process';
-import { resolve } from 'node:path';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 import { AgentCoreApplication, type AgentCoreApplicationProps } from '@aws/agentcore-cdk';
 import {
   ArnFormat,
-  AssetHashType,
-  BundlingOutput,
   CfnOutput,
   CfnResource,
   Duration,
@@ -21,10 +21,19 @@ import {
   FunctionUrlAuthType,
   Function as LambdaFunction,
   Runtime,
+  RuntimeFamily,
 } from 'aws-cdk-lib/aws-lambda';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import type { Construct } from 'constructs';
+
+// The welt-lambda.json asset of a Welt release.
+interface WeltManifest {
+  zip: string;
+  runtime: string;
+  architecture: string;
+  handler: string;
+}
 
 interface AgentCoreStackProps extends StackProps {
   application: AgentCoreApplicationProps;
@@ -167,26 +176,23 @@ export class AgentCoreStack extends Stack {
       },
       removalPolicy: RemovalPolicy.DESTROY,
     });
+    // The Welt release names its ZIP and the runtime, architecture, and handler to run
+    // it under, so the function follows them when Renovate raises the Welt version.
+    // Synthesis copies the ZIP into cdk.out, so the download goes once the app exits.
+    const weltDir = mkdtempSync(join(tmpdir(), 'welt-'));
+    process.once('exit', () => rmSync(weltDir, { recursive: true, force: true }));
+    const weltManifest: WeltManifest = JSON.parse(
+      execFileSync(process.execPath, [resolve(deployDir, 'download-welt.mjs'), weltDir], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'inherit'],
+      }),
+    );
     const welt = new LambdaFunction(this, 'Welt', {
       functionName,
-      runtime: Runtime.PYTHON_3_14,
-      architecture: Architecture.ARM_64,
-      handler: 'lambda_function.lambda_handler',
-      code: Code.fromAsset(deployDir, {
-        assetHashType: AssetHashType.OUTPUT,
-        bundling: {
-          image: Runtime.PYTHON_3_14.bundlingImage,
-          outputType: BundlingOutput.ARCHIVED,
-          local: {
-            tryBundle(outputDir) {
-              execFileSync(process.execPath, [resolve(deployDir, 'download-welt.mjs'), outputDir], {
-                stdio: 'inherit',
-              });
-              return true;
-            },
-          },
-        },
-      }),
+      runtime: new Runtime(weltManifest.runtime, RuntimeFamily.PYTHON),
+      architecture: Architecture.custom(weltManifest.architecture),
+      handler: weltManifest.handler,
+      code: Code.fromAsset(join(weltDir, weltManifest.zip)),
       memorySize: 512,
       timeout: Duration.minutes(15),
       retryAttempts: 0,

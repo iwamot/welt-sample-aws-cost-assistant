@@ -9,9 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = (
     ROOT / "agentcore/cdk/cdk.out/AgentCore-WeltCostAssistant-default.template.json"
 )
-# Nothing else ties these pins to the Runtime and Lambda settings in the template:
+# Nothing else ties these pins to the Runtime settings in the template:
 # deployment succeeds either way, and a mismatch only shows when the code runs.
-WELT_DOWNLOAD = (ROOT / "deploy/download-welt.mjs").read_text()
 MISE = (ROOT / "mise.toml").read_text()
 RENOVATE = json.loads((ROOT / ".github/renovate.json").read_text())
 READ_VERBS = ("Describe", "Get", "List", "View")
@@ -116,15 +115,6 @@ class StackTemplateTest(unittest.TestCase):
             for action in actions if isinstance(actions, list) else [actions]:
                 with self.subTest(action=action):
                     self.assertNotIn(action.split(":")[0], COST_SERVICES)
-
-    def test_welt_asset_matches_the_lambda_runtime_and_architecture(self):
-        ((python, architecture),) = re.findall(
-            r"const filename = 'welt-lambda-python(\d+\.\d+)-(\w+)\.zip';",
-            WELT_DOWNLOAD,
-        )
-        (function,) = self.of_type("AWS::Lambda::Function")
-        self.assertEqual(function["Properties"]["Runtime"], f"python{python}")
-        self.assertEqual(function["Properties"]["Architectures"], [architecture])
 
     def test_checks_run_on_the_python_that_agentcore_runtime_runs(self):
         (runtime,) = self.of_type("AWS::BedrockAgentCore::Runtime")
