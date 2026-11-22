@@ -25,7 +25,10 @@ if (release.immutable !== true) {
   throw new Error(`Welt ${version} is not an immutable release`);
 }
 const asset = release.assets.find((a) => a.name === filename);
-if (!asset?.digest?.startsWith('sha256:')) {
+if (!asset) {
+  throw new Error(`Welt ${version} has no asset named ${filename}`);
+}
+if (!asset.digest?.startsWith('sha256:')) {
   throw new Error(`Welt ${version} has no SHA-256 digest for ${filename}`);
 }
 
