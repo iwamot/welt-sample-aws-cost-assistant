@@ -156,7 +156,10 @@ export class AgentCoreStack extends Stack {
     const functionName = `${this.stackName}-welt`;
     // The stack creates the secret with empty values. Welt reads it on a cold start, so
     // the Slack credentials stay out of the template and the function's environment.
-    const slackSecret = new Secret(this, 'SlackSecret', {
+    // CloudFormation names the secret after the first 27 characters of its logical ID,
+    // so this construct ID, which fits within them, makes the secret easy to find in the
+    // console without fixing a name.
+    const slackSecret = new Secret(this, 'CostAssistantSlackSecret', {
       description: 'Slack credentials for Welt: SLACK_BOT_TOKEN and SLACK_SIGNING_SECRET.',
       secretObjectValue: {
         SLACK_BOT_TOKEN: SecretValue.unsafePlainText(''),
