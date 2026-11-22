@@ -136,6 +136,17 @@ class StackTemplateTest(unittest.TestCase):
         ]
         self.assertEqual(rule["allowedVersions"], f"<{major}.{int(minor) + 1}")
 
+    def test_slack_secret_name_starts_with_the_name_the_steps_give(self):
+        # CloudFormation names the secret after the first 27 characters of its logical
+        # ID, and the README and the article tell readers to open the secret whose name
+        # starts with this.
+        (logical_id,) = [
+            key
+            for key, resource in self.resources.items()
+            if resource["Type"] == "AWS::SecretsManager::Secret"
+        ]
+        self.assertTrue(logical_id[:27].startswith("CostAssistantSlackSecret"))
+
 
 class HelperTest(unittest.TestCase):
     def test_joined_replaces_intrinsic_functions(self):

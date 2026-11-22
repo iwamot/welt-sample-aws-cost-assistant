@@ -42,7 +42,7 @@ npm run cdk -- bootstrap
 npm run cdk -- deploy
 ```
 
-CDK asks you to confirm the IAM changes, and prints `SlackSecretName` and `FunctionUrl` when it finishes.
+CDK asks you to confirm the IAM changes, and prints `FunctionUrl` when it finishes.
 
 ### Create the Slack app
 
@@ -58,7 +58,7 @@ CDK asks you to confirm the IAM changes, and prints `SlackSecretName` and `Funct
 
 ### Store the Slack credentials
 
-The stack creates a Secrets Manager secret with empty values. Welt reads it and picks up an edited value within five minutes. In the Secrets Manager console in `us-east-1`, open the secret named in the `SlackSecretName` output, choose **Retrieve secret value** and then **Edit**, and enter the bot token as `SLACK_BOT_TOKEN` and the signing secret as `SLACK_SIGNING_SECRET`.
+The stack creates a Secrets Manager secret with empty values. Welt reads it and picks up an edited value within five minutes. In the Secrets Manager console in `us-east-1`, open the secret whose name starts with `CostAssistantSlackSecret` (with `TARGET_NAME`, the one in the `SlackSecretName` output), choose **Retrieve secret value** and then **Edit**, and enter the bot token as `SLACK_BOT_TOKEN` and the signing secret as `SLACK_SIGNING_SECRET`.
 
 ### Connect Slack and ask a question
 
@@ -81,11 +81,9 @@ The stack creates a Secrets Manager secret with empty values. Welt reads it and 
    - If you edit the Secrets Manager values, wait a few minutes before you choose it again, since Welt keeps using the old values for up to five minutes.
 4. In the channel you prepared, run `/invite @AWS Cost Assistant` to invite the app.
 5. Mention the app with a question, such as `@AWS Cost Assistant What are my AWS costs this month?`.
-6. Check in the Cost Explorer console that the amount in the thread reply is correct.
 
 To ask a follow-up question, reply in the same thread; you don't need to mention the app again. You can also ask questions such as these:
 
-- `Which services cost the most?`
 - `How did my costs change from last month?`
 - `Where can I save money?`
 
@@ -125,5 +123,5 @@ In 20 test questions with the `global.anthropic.claude-sonnet-4-6` profile in `u
 2. In `agentcore/cdk`, run `npm run cdk -- destroy`. If you set `STACK_REGION` or `TARGET_NAME` for the deployment, set them again.
 3. In CloudWatch Logs, delete the agent's Runtime log group, which AgentCore creates outside the stack. Its name starts with `/aws/bedrock-agentcore/runtimes/WeltCostAssistant_<target name>_`, which is `WeltCostAssistant_default_` unless you set `TARGET_NAME`.
 4. If you ran `cdk bootstrap` for the first time for this sample, also delete the resources that CDK created for it. In the CloudFormation console in the Region you deployed to, check the creation time of the `CDKToolkit` stack: a creation time close to your deployment is a hint that it's yours.
-   1. Delete the `CDKToolkit` stack.
+   1. After the stack deletion in step 2 finishes, delete the `CDKToolkit` stack. CloudFormation deletes the sample's stack with a role in `CDKToolkit`, so deleting `CDKToolkit` first makes the stack deletion fail.
    2. In the S3 console, select the bucket in the Region you deployed to whose name starts with `cdk-hnb659fds-assets-`, choose **Empty**, and then delete the bucket. The bucket remains after the stack is deleted.
