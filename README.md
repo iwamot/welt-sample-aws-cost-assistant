@@ -96,7 +96,8 @@ To ask a follow-up question, reply in the same thread; you don't need to mention
 - **Date.** Strands' `ContextInjector` appends today's date (UTC) to the latest user message so the model can resolve periods such as "this month".
 - **Caching.** `CacheConfig(strategy="auto")` caches the system prompt, the tool definitions, and earlier messages.
 - **Shared visibility.** Everyone who can message the app reads the same cost data. In an AWS Organizations management account, that includes linked-account costs.
-- **Policy decisions.** The Gateway's policy decisions go to CloudWatch metrics by default, in the `AWS/Bedrock-AgentCore` namespace: `AllowDecisions` and `DenyDecisions`. The decisions on which tools to list carry the tool in the `ToolName` dimension; the decisions on tool calls are counted per Gateway. The Gateway's logs don't record policy decisions, so the metrics are where you check that the policy works.
+- **Policy decisions.** The Gateway's policy decisions go to CloudWatch metrics by default, in the `AWS/Bedrock-AgentCore` namespace: `AllowDecisions` and `DenyDecisions`. The decisions on which tools to list carry the tool in the `ToolName` dimension; the decisions on tool calls are counted per Gateway.
+- **Gateway logs.** The stack delivers the Gateway's application logs to the log group `/aws/vendedlogs/bedrock-agentcore/gateway/AgentCore-WeltCostAssistant-<target name>`, kept for a week. They record each MCP request with its body and response, so you can read the script the agent passed to `run_script` and the data it got back, which here is your cost data. Removing the stack deletes the log group.
 - **Traces.** Tracing is off (`enableOtel: false` in `agentcore/agentcore.json`). Turning it on needs the `aws-opentelemetry-distro` package in `app/agent` and CloudWatch Transaction Search, an account-level setting that stays after you remove the stack. Traces can include the prompts and tool results, which here are your cost data.
 
 ## Check locally
@@ -105,7 +106,7 @@ To ask a follow-up question, reply in the same thread; you don't need to mention
 ./validate.sh
 ```
 
-The script uses [mise](https://mise.jdx.dev/) to install the pinned tools, including the Python version that AgentCore Runtime runs. It audits the dependencies and checks their licenses, lints and type-checks the code, synthesizes the stack with a placeholder account ID, which needs no AWS credentials, and runs the tests. The tests cover how the agent builds its system prompt, and check the synthesized template for the Cedar policy's tools, the policy engine's ENFORCE mode, and the IAM permissions of the Gateway and the agent. They also check that the link to Slack's app-creation screen carries the manifest in `deploy/slack-manifest.yml`.
+The script uses [mise](https://mise.jdx.dev/) to install the pinned tools, including the Python version that AgentCore Runtime runs. It audits the dependencies and checks their licenses, lints and type-checks the code, synthesizes the stack with a placeholder account ID, which needs no AWS credentials, and runs the tests. The tests cover how the agent builds its system prompt, and check the synthesized template for the Cedar policy's tools, the policy engine's ENFORCE mode, the IAM permissions of the Gateway and the agent, and the delivery of the Gateway's logs. They also check that the link to Slack's app-creation screen carries the manifest in `deploy/slack-manifest.yml`.
 
 To run the agent's test on Python 3.12 or 3.13, which AgentCore Runtime and the dependencies also support, set the version for `uv`:
 
