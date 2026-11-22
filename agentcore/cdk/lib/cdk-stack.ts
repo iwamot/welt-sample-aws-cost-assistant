@@ -23,7 +23,13 @@ import {
   Runtime,
   RuntimeFamily,
 } from 'aws-cdk-lib/aws-lambda';
-import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
+import {
+  CfnDelivery,
+  CfnDeliveryDestination,
+  CfnDeliverySource,
+  LogGroup,
+  RetentionDays,
+} from 'aws-cdk-lib/aws-logs';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import type { Construct } from 'constructs';
 
@@ -90,6 +96,27 @@ export class AgentCoreStack extends Stack {
     for (const target of gatewayTargets) {
       agentToolsPolicy.node.addDependency(target);
     }
+    // The Gateway logs each tool call with its arguments and response, such as the script
+    // the agent passed to run_script and the data it got back, but only once it has a log
+    // destination.
+    const gatewayLogs = new LogGroup(this, 'GatewayLogs', {
+      logGroupName: `/aws/vendedlogs/bedrock-agentcore/gateway/${this.stackName}`,
+      retention: RetentionDays.ONE_WEEK,
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
+    const gatewayLogSource = new CfnDeliverySource(this, 'GatewayLogSource', {
+      name: `${this.stackName}-gateway`,
+      resourceArn: gateway.gatewayArn,
+      logType: 'APPLICATION_LOGS',
+    });
+    const gatewayLogDestination = new CfnDeliveryDestination(this, 'GatewayLogDestination', {
+      name: `${this.stackName}-gateway`,
+      destinationResourceArn: gatewayLogs.logGroupArn,
+    });
+    new CfnDelivery(this, 'GatewayLogDelivery', {
+      deliverySourceName: gatewayLogSource.ref,
+      deliveryDestinationArn: gatewayLogDestination.attrArn,
+    });
     // The agent calls the model in the Runtime's Region unless MODEL_REGION is set at
     // deploy time. Without MODEL_ID, the agent uses its own default model.
     agent.addEnvironmentVariable('MODEL_REGION', process.env.MODEL_REGION || this.region);

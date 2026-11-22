@@ -116,6 +116,24 @@ class StackTemplateTest(unittest.TestCase):
                 with self.subTest(action=action):
                     self.assertNotIn(action.split(":")[0], COST_SERVICES)
 
+    def test_gateway_delivers_its_application_logs_to_a_log_group(self):
+        (source,) = self.of_type("AWS::Logs::DeliverySource")
+        self.assertEqual(source["Properties"]["LogType"], "APPLICATION_LOGS")
+        (gateway_id,) = [
+            key
+            for key, resource in self.resources.items()
+            if resource["Type"] == "AWS::BedrockAgentCore::Gateway"
+        ]
+        self.assertEqual(
+            source["Properties"]["ResourceArn"],
+            {"Fn::GetAtt": [gateway_id, "GatewayArn"]},
+        )
+        (destination,) = self.of_type("AWS::Logs::DeliveryDestination")
+        self.assertEqual(
+            destination["Properties"]["DestinationResourceArn"]["Fn::GetAtt"][1], "Arn"
+        )
+        self.assertEqual(len(self.of_type("AWS::Logs::Delivery")), 1)
+
     def test_checks_run_on_the_python_that_agentcore_runtime_runs(self):
         (runtime,) = self.of_type("AWS::BedrockAgentCore::Runtime")
         artifact = runtime["Properties"]["AgentRuntimeArtifact"]["CodeConfiguration"]
