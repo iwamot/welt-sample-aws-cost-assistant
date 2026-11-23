@@ -35,7 +35,7 @@ The commands deploy to `us-east-1` with Claude Sonnet 4.6. To change these defau
 | `STACK_REGION` | `us-east-1` | The Region for the stack |
 | `MODEL_ID` | `global.anthropic.claude-sonnet-4-6` | The model the agent uses |
 | `MODEL_REGION` | The stack's Region | The Region where the agent calls the model |
-| `TARGET_NAME` | `default` | The name that separates copies, used in the stack name `AgentCore-WeltCostAssistant-<name>` and in the names of the main resources |
+| `TARGET_NAME` | `default` | The name that separates copies, used in the stack name `AgentCore-WeltCostAssistant-<name>` and in the names of the main resources. Up to 10 characters: a longer one makes the Runtime name pass the 48 characters the AgentCore CDK allows, and `cdk synth` fails |
 
 ```bash
 npm run cdk -- bootstrap
