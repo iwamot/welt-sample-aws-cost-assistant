@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 // renovate: datasource=github-releases depName=iwamot/welt
-const version = 'v0.10.25';
+const version = 'v0.10.26';
 
 // Downloads the Welt Lambda ZIP of the version above into the directory given as the
 // first argument, and prints the release's welt-lambda.json, which names the ZIP and
