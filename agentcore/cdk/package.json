@@ -6,7 +6,7 @@
     "cdk": "npm run build && cdk"
   },
   "devDependencies": {
-    "@types/node": "26.6.6",
+    "@types/node": "26.6.7",
     "aws-cdk": "2.1149.0",
     "typescript": "7.0.2"
   },
