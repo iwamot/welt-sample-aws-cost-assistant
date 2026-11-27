@@ -14,6 +14,9 @@ resolution-markers = [
 exclude-newer = "0001-01-01T00:00:00Z" # This has no effect and is included for backwards compatibility when using relative exclude-newer values.
 exclude-newer-span = "P1D"
 
+[options.exclude-newer-package]
+welt-io-strands = false
+
 [[package]]
 name = "aiofile"
 version = "3.12.3"
@@ -1731,14 +1734,14 @@ wheels = [
 
 [[package]]
 name = "welt-io-strands"
-version = "0.10.4"
+version = "0.10.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "strands-agents" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c1/ef/766b7a17c1157babbc45c916deafa093ddd7b3b9847c0f09f9eefe4666d5/welt_io_strands-0.10.4.tar.gz", hash = "sha256:72bf6fefb838108b4842fe8bf7ba10f32749be5f8efd32182a36aea97a4eb6ec", size = 31058, upload-time = "2026-10-25T16:51:45.235Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dd/2a/26f48b740675c0b5b38b5d3a4d01e475e9376b5bb15c59a13e11745eee84/welt_io_strands-0.10.5.tar.gz", hash = "sha256:4d595af6fcd988b73f6fb273fbc6d5eea032ed9455af012435337a84cb9b3043", size = 32293, upload-time = "2026-11-26T15:57:02.372Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/39/affbeea2c708e520de587fb68f4115daf98964714b61a576e8f8e7eda897/welt_io_strands-0.10.4-py3-none-any.whl", hash = "sha256:a44a353b750de70a9c8cbb9cdf25102b3c94424c64757fbebd0786b30abfac3d", size = 16505, upload-time = "2026-10-25T16:51:43.843Z" },
+    { url = "https://files.pythonhosted.org/packages/16/dc/7736558e9ee55bbfe1d529ca4ca3e04fa738cf54c78e90dd085efa2e0128/welt_io_strands-0.10.5-py3-none-any.whl", hash = "sha256:4d9f7783227c90409e39d58c6e4d3180391896ee7b867aeb6f1a72f2adbbd483", size = 16930, upload-time = "2026-11-26T15:57:01.402Z" },
 ]
 
 [[package]]
@@ -1762,7 +1765,7 @@ requires-dist = [
     { name = "bedrock-agentcore", specifier = "==1.28.0" },
     { name = "mcp-proxy-for-aws", specifier = "==1.8.0" },
     { name = "strands-agents", specifier = "==1.67.0" },
-    { name = "welt-io-strands", specifier = "==0.10.4" },
+    { name = "welt-io-strands", specifier = "==0.10.5" },
 ]
 
 [package.metadata.requires-dev]
