@@ -14,6 +14,9 @@ dev = ["pip-licenses==5.5.5"]
 
 [tool.uv]
 exclude-newer = "1 day"
+# iwamot's own packages are proposed by Renovate without a release age,
+# so take them as soon as they are published.
+exclude-newer-package = { welt-io-strands = false }
 
 [tool.uv.audit]
 # Check the locked packages against OSV malware advisories before any sync
